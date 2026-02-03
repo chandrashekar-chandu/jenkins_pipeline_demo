@@ -1,40 +1,42 @@
 pipeline {
     agent any
 
-    stages {
+    tools {
+        maven 'Maven'   // make sure Maven is configured in Jenkins
+        jdk 'JDK'       // make sure JDK is configured
+    }
 
-        stage('Checkout Code') {
-            steps {
-                git 'https://github.com/laxmi916/calculator-app.git'
-            }
-        }
+    stages {
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean test'
+                echo 'Running Maven clean test on Windows'
+                bat 'mvn clean test'
             }
         }
 
         stage('Package JAR') {
             steps {
-                sh 'mvn package'
+                echo 'Packaging JAR'
+                bat 'mvn package'
             }
         }
 
         stage('Install to Local Repo') {
             steps {
-                sh 'mvn install'
+                echo 'Installing JAR to local Maven repository'
+                bat 'mvn install'
             }
         }
     }
 
     post {
         success {
-            echo 'Library JAR packaged and installed successfully'
+            echo '✅ Library JAR packaged and installed successfully'
             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
         failure {
-            echo 'Build failed'
+            echo '❌ Build failed'
         }
     }
 }
