@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'Maven'
+    }
+
     stages {
 
         stage('Build & Test') {
@@ -12,14 +16,12 @@ pipeline {
 
         stage('Package JAR') {
             steps {
-                echo 'Packaging JAR'
                 bat 'mvn package'
             }
         }
 
         stage('Install to Local Repo') {
             steps {
-                echo 'Installing JAR to local Maven repository'
                 bat 'mvn install'
             }
         }
