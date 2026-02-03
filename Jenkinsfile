@@ -3,32 +3,38 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Checkout Code') {
             steps {
-                echo "Build stage running..."
-                // javac FPMCalculator.java
+                git 'https://github.com/laxmi916/calculator-app.git'
             }
         }
 
-        stage('Test') {
+        stage('Build & Test') {
             steps {
-                echo "Test stage running..."
+                sh 'mvn clean test'
             }
         }
 
-        stage('Deploy') {
+        stage('Package JAR') {
             steps {
-                echo "Deploy stage running..."
+                sh 'mvn package'
+            }
+        }
+
+        stage('Install to Local Repo') {
+            steps {
+                sh 'mvn install'
             }
         }
     }
 
     post {
         success {
-            echo "✅ Pipeline executed successfully!"
+            echo 'Library JAR packaged and installed successfully'
+            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
         failure {
-            echo "❌ Pipeline failed!"
+            echo 'Build failed'
         }
     }
 }
