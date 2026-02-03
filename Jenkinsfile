@@ -5,36 +5,39 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/chandrashekar-chandu/jenkins_pipeline_demo.git'
+                git 'https://github.com/laxmi916/calculator-app.git'
             }
         }
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean test'
+                echo 'Running Maven clean test on Windows'
+                bat 'mvn clean test'
             }
         }
 
         stage('Package JAR') {
             steps {
-                sh 'mvn package'
+                echo 'Packaging JAR on Windows'
+                bat 'mvn package'
             }
         }
 
         stage('Install to Local Repo') {
             steps {
-                sh 'mvn install'
+                echo 'Installing JAR to local Maven repo'
+                bat 'mvn install'
             }
         }
     }
 
     post {
         success {
-            echo 'Library JAR packaged and installed successfully'
+            echo '✅ Library JAR packaged and installed successfully'
             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
         failure {
-            echo 'Build failed'
+            echo '❌ Build failed'
         }
     }
 }
