@@ -1,39 +1,40 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven'
-    }
-
     stages {
+
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/chandrashekar-chandu/jenkins_pipeline_demo.git'
+            }
+        }
 
         stage('Build & Test') {
             steps {
-                echo 'Running Maven clean test on Windows'
-                bat 'mvn clean test'
+                sh 'mvn clean test'
             }
         }
 
         stage('Package JAR') {
             steps {
-                bat 'mvn package'
+                sh 'mvn package'
             }
         }
 
         stage('Install to Local Repo') {
             steps {
-                bat 'mvn install'
+                sh 'mvn install'
             }
         }
     }
 
     post {
         success {
-            echo '✅ Library JAR packaged and installed successfully'
+            echo 'Library JAR packaged and installed successfully'
             archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
         }
         failure {
-            echo '❌ Build failed'
+            echo 'Build failed'
         }
     }
 }
